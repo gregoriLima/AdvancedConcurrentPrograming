@@ -7,10 +7,14 @@ import java.math.BigInteger;
 import javax.swing.*;
 import javafx.event.*;
 
+
+
 public class TelaCalculadora {
 
 	public static void main(String[] args) {
 
+		//implementa uma simples janela com dois campos que são multiplicados de maneira pouco performática propositalmente
+		
 		JFrame janela = new JFrame("Multiplicação paralela");
 		
 		JTextField primeiro = new JTextField(10);
@@ -56,19 +60,24 @@ class AcaoBotao implements ActionListener{
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 
+		//obs. Threads são mapeadas para Threads do sistema operacional pela JVM
 		
 		//Executando com threads implementando Runnable na classe tarefa
 		TarefaMultiplicacao tarefa = new TarefaMultiplicacao(primeiro, segundo, resultado);
 		Thread threadMultiplicador = new Thread(tarefa); //Thread recebe um Runnable
 		threadMultiplicador.start(); //começa a rodar a thread
 		
-		
+		//---
 		//Executando diretamente a classe que herda de Thread que é runabble
 		//Não é uma boa prática, pois não é aproveitado o polimorfismo e além disso, a classe TarefaMultiplicacaoThread herda um monte de
 		//métodos não utilizados
 		//TarefaMultiplicacaoThread tarefaThread = new TarefaMultiplicacaoThread(primeiro, segundo, resultado);
 		//tarefaThread.start(); //como a classe extende Thread que é runnable, e sobreescreve o método run(), pode-se dar o start() diretamente
-	
+		//---
+		
+		
+		new Thread( () -> System.out.println("a") ).start();
+		
 		
 		
 		//executando desta maneira, com números muito grandes, os campos ficam travados até a finalização do cálculo
