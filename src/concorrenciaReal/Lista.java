@@ -38,5 +38,9 @@ public class Lista {
 		return this.elementos[posicao];
 	}
 	
+	public boolean estaCheia() {
+		return elementos.length == indice;
+	}
+	
 	
 }

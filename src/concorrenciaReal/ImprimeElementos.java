@@ -14,6 +14,8 @@ public class ImprimeElementos implements Runnable {
 
 		synchronized (lista) {
 
+		if(!lista.estaCheia()) {	//só espera se a lista estiver sendo preenchida
+									//assim não ocorre de o thread ficar esperando e não ser notificado
 			try {
 				System.out.println("Aguardando a lista ser populada!");
 				lista.wait();//Devolvendo a chave e aguardando a notificação de lista
@@ -23,7 +25,9 @@ public class ImprimeElementos implements Runnable {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-
+		}
+		
+		
 			for (int x = 0; x < lista.tamanho(); x++) {
 
 				System.out.println(x + " - " + lista.pegaElementos(x));
