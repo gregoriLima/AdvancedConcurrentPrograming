@@ -89,7 +89,7 @@ public class ClienteTarefas {
 			threadEnviaComando.join(); //junta esta thread atual, a main, com a thread Envia comando. Assim esta thread 
 										//main atual só continua quando a threadEnviaComando terminar
 			
-//			threadEnviaComando.join(5000);//junta-se a threadEnviaComandos por 5 segundos, após este tempo, continua a execução
+//			threadEnviaComando.join(5000);//junta-se a threadEnviaComandos por 5 segundos, após este tempo, continua a execuçãos
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -98,6 +98,8 @@ public class ClienteTarefas {
 		System.out.println("Fechando conexão...");
 		
 		socket.close();
+		
+		
 		
 	}
 
