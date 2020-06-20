@@ -36,9 +36,17 @@ public class ServidorTarefas {
 		// utilizada
 		// uma diferente para cada cliente conectado
 		this.servidor = new ServerSocket(12345);
-
-//		ExecutorService threadPool = Executors.newFixedThreadPool(2); //define um número fixo de threads na pool
-		this.threadPool = Executors.newCachedThreadPool(); // define que o número de threads na pool deve
+		
+		//para poder tratar as exceptions que são lançadas pelas threads, é necessário
+		//utilizar o método set.UncaughtExceptoinHandler() com um objeto Thread.
+		//Como o newFixedThreadPool cria automaticamente as threads internamente, não é possível
+		//ter acesso aos objetos Threads criados. Para isso é passado como argumento uma Fábrica de Threads
+		//assim, dentro desta fábrica de Threads, definimos uma classe tratadora de erros na criação de cada 
+		//thread pela pool de Threads de Executor.
+		this.threadPool = Executors.newFixedThreadPool(4, new FabricaDeThreads());
+		
+//		this.threadPool = Executors.newFixedThreadPool(4); //define um número fixo de threads na pool
+//		this.threadPool = Executors.newCachedThreadPool(); // define que o número de threads na pool deve
 															// crescer ou diminuir dinâmicamente
 															// dependendo da nescessidade. Threads ociosas
 															// por mais de 60s são descartadas
@@ -69,7 +77,7 @@ public class ServidorTarefas {
 				// e possa ser reutilizada para lidar com outra conexão. Para isso utiliza-se um
 				// pool de threads
 				// já implementado pela classe Executors
-				threadPool.execute(new DistribuirTarefas(socket, this)); // executa o Runnable passado na thread disponível
+				threadPool.execute(new DistribuirTarefas(threadPool, socket, this)); // executa o Runnable passado na thread disponível
 				// ---
 			} catch (SocketException e) {System.out.println("Socket Exception");}
 		}
