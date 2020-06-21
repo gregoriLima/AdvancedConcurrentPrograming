@@ -1,0 +1,11 @@
+Pool de thread, reuso de thread
+
+Factory Method
+FrontController
+Command
+Padrão de projetos
+
+Threads com resultado de execução
+Threads com timeout de execução
+
+mensageria
