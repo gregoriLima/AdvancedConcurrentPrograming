@@ -6,7 +6,7 @@
 - ExecutorService using Threads  Pool (Cached and Fixed)
 - Example explain use of volatile and AtomicBolean
 - Exception Handler in Threads
-- ThreadFactory default and programaticaly
+- ThreadFactory default and programaticaly implemented
 - Callable e Future
 - Design patterns: Factory Method, Front Controller, Command
 - Messageria exemple using BlockingQueue
