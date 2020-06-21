@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -12,6 +14,7 @@ public class ServidorTarefas {
 
 	private ExecutorService threadPool;
 	private ServerSocket servidor;
+	private BlockingQueue<String> filaComandos;
 	
 	//cada thread é mapeada para uma thread nativa do sistema operacional
 	//para otimizar o acesso, cada thread copia esta variável booleana para o seu cache
@@ -43,7 +46,7 @@ public class ServidorTarefas {
 		//ter acesso aos objetos Threads criados. Para isso é passado como argumento uma Fábrica de Threads
 		//assim, dentro desta fábrica de Threads, definimos uma classe tratadora de erros na criação de cada 
 		//thread pela pool de Threads de Executor.
-		this.threadPool = Executors.newFixedThreadPool(4, new FabricaDeThreads());
+		this.threadPool = Executors.newCachedThreadPool(new FabricaDeThreads());
 		//ThreadFactory factory = Executors.defaultThreadFactory(); //assim é possível acessar a Factory padrão utilizada por Executors
 		
 //		this.threadPool = Executors.newFixedThreadPool(4); //define um número fixo de threads na pool
@@ -52,9 +55,23 @@ public class ServidorTarefas {
 															// dependendo da nescessidade. Threads ociosas
 															// por mais de 60s são descartadas
 		this.estaRodando.set(true);
+		this.filaComandos = new ArrayBlockingQueue<>(2); //define a capacidade da ArrayBlockingQueue
+												//que possui os métodos bloqueantes para retirada e oferta para a Queue
+		iniciandoConsumidores();
 	}
 
 	
+
+	private void iniciandoConsumidores() {
+		int qtdConsumidores = 2;
+		for (int i = 0; i < qtdConsumidores; i++) {
+			Consumidor consumidor = new Consumidor(filaComandos);
+			this.threadPool.execute(consumidor);
+		}
+		
+	}
+
+
 
 	public void rodar() throws IOException {
 
@@ -78,7 +95,7 @@ public class ServidorTarefas {
 				// e possa ser reutilizada para lidar com outra conexão. Para isso utiliza-se um
 				// pool de threads
 				// já implementado pela classe Executors
-				threadPool.execute(new DistribuirTarefas(threadPool, socket, this)); // executa o Runnable passado na thread disponível
+				threadPool.execute(new DistribuirTarefas(threadPool, filaComandos, socket, this)); // executa o Runnable passado na thread disponível
 				// ---
 			} catch (SocketException e) {System.out.println("Socket Exception");}
 		}

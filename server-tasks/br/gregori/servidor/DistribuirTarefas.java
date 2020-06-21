@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.PrintStream;
 import java.net.Socket;
 import java.util.Scanner;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
@@ -15,9 +16,11 @@ public class DistribuirTarefas implements Runnable {
 	private Socket socket;
 	private ServidorTarefas servidor;
 	private ExecutorService threadPool;
+	private BlockingQueue<String> filaComandos;
 
-	public DistribuirTarefas(ExecutorService threadPool, Socket socket, ServidorTarefas servidor) {
+	public DistribuirTarefas(ExecutorService threadPool, BlockingQueue<String> filaComandos, Socket socket, ServidorTarefas servidor) {
 		this.threadPool = threadPool;
+		this.filaComandos = filaComandos;
 		this.socket = socket;
 		this.servidor = servidor;
 	}
@@ -73,6 +76,13 @@ public class DistribuirTarefas implements Runnable {
 						
 						break;
 					}
+					case "C3":{
+						
+						this.filaComandos.put(comandoRecebido);//bloqueia a thread
+						saidaCliente.println("Comando c3 adicionado a fila");
+						
+						break;
+						}
 					case "fim": {
 						saidaCliente.println("Servidor desligado");
 						
@@ -90,6 +100,9 @@ public class DistribuirTarefas implements Runnable {
 			saidaCliente.close();
 
 		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
