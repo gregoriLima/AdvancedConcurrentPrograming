@@ -6,6 +6,9 @@ import java.io.PrintStream;
 import java.net.Socket;
 import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
+
+//FrontController
 
 public class DistribuirTarefas implements Runnable {
 
@@ -48,8 +51,25 @@ public class DistribuirTarefas implements Runnable {
 					case "c2": {
 						saidaCliente.println("Confirmação comando c2");
 						
-						ComandoC2 c2 = new ComandoC2(saidaCliente);
-						this.threadPool.execute(c2);
+						ComandoC2ChamaWS c2WS = new ComandoC2ChamaWS(saidaCliente);
+						ComandoC2AcessaDB c2DB = new ComandoC2AcessaDB(saidaCliente);
+//						this.threadPool.execute(c2); //execute é apenas para Runnable
+						Future<String> futureWS = this.threadPool.submit(c2WS); //submit retorna um Future<T>, retorna algo que ainda não está pronto
+													//que estará pronto no futuro
+						Future<String> futureDB = this.threadPool.submit(c2DB);
+						//Callable não é Runnable, mas Future é, então pode ser passado como argumento para Thread! Podendo ser considerada um Adapter
+						
+						//O future tem um método chamado .get, e este método vai devolver o resultado da execução 
+						//da thread quando estiver pronto. A linha get fica parada até o resultado ser retornado
+//						String resultadoWS = futureWS.get();
+					
+						//para que o programa não fica travado nesta linha do get() do future, ele deve ser implementado
+						//dentro de uma outra thread
+						
+						this.threadPool.submit(new ResultadosFutureDBeWS(futureWS, futureDB, saidaCliente)); //como esta tarefa não devolve nada, poderia ser utilizado o Runnable
+						//submit tem duas sobrecargas, uma que recebe  Callable e outra que recebe Runnable
+						//submit retorna um Future e não bloqueia a execução do código
+						//duas coisas complicadas: implementar um cache e a segunda dar nome para as coisas;
 						
 						break;
 					}

@@ -44,6 +44,7 @@ public class ServidorTarefas {
 		//assim, dentro desta fábrica de Threads, definimos uma classe tratadora de erros na criação de cada 
 		//thread pela pool de Threads de Executor.
 		this.threadPool = Executors.newFixedThreadPool(4, new FabricaDeThreads());
+		//ThreadFactory factory = Executors.defaultThreadFactory(); //assim é possível acessar a Factory padrão utilizada por Executors
 		
 //		this.threadPool = Executors.newFixedThreadPool(4); //define um número fixo de threads na pool
 //		this.threadPool = Executors.newCachedThreadPool(); // define que o número de threads na pool deve
