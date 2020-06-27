@@ -14,3 +14,5 @@
 # Schema
 
 ![](https://raw.githubusercontent.com/gregoriLima/AdvancedConcurrentPrograming/master/Schema.png)
+
+Grégori Fernandes de Lima
