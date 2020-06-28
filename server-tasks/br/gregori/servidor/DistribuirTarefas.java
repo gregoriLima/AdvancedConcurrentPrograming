@@ -6,8 +6,10 @@ import java.io.PrintStream;
 import java.net.Socket;
 import java.util.Scanner;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 //FrontController
 
@@ -65,6 +67,10 @@ public class DistribuirTarefas implements Runnable {
 						//O future tem um método chamado .get, e este método vai devolver o resultado da execução 
 						//da thread quando estiver pronto. A linha get fica parada até o resultado ser retornado
 //						String resultadoWS = futureWS.get();
+		
+						
+//						CompletableFuture<T> //esta classe tem vários método úteis para se trabalha com 
+											//Future
 					
 						//para que o programa não fica travado nesta linha do get() do future, ele deve ser implementado
 						//dentro de uma outra thread
